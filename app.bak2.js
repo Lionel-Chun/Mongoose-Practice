@@ -2,10 +2,11 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+const url = "mongodb+srv://misterlionelchun:<Donbe@0919>@cluster0.bed4h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 app.set("view engine", "ejs");
 
-mongoose.connect("mongodb://localhost:27017/exampleDB")
+mongoose.connect(url, {serverSelectionTimeoutMS: 5000})
 .then(() => console.log('connected!'))
 .catch((e) => console.log(e));
 
@@ -46,7 +47,7 @@ const Student = mongoose.model("Student", studentSchema);
 // // Step 5 Create a record for test filter
 // const newObject = new Student({
 //     name: "Wilson",
-//     age: 27,
+//     age: -10,
 //     major: "Computer Sciense",
 //     scholarship: {
 //         merit: 5000,
@@ -99,7 +100,6 @@ const Student = mongoose.model("Student", studentSchema);
 //     console.log(e);
 // });{
 
-// // Step 7 Find One And Update
 // Student.findOneAndUpdate(
 //     {name: "Grace Xie"}, 
 //     {name: "Grace"}, 
@@ -108,33 +108,17 @@ const Student = mongoose.model("Student", studentSchema);
 //     console.log(newData);
 // }).catch(e => console.log(e));
 
-// // Step 8 Find by filter
-// Student.find({"scholarship.merit": {$gte: 5000}})
-// .then((data) => {
-//     console.log(data);
-// })
-// .catch((e) => {
-//     console.log(e);
-// });
 
-// // Step 9 Delete Wilson
-// Student.deleteOne({name: "Wilson"})
-// .exec()
-// .then((msg) => {
-//     console.log(msg);
-// }).catch(e => console.log(e))
-
-
-app.get("/", async (req, res) => {
-    try {
-        let data = await Student.find().exec();
-        // let data = await Student.find({name: "Lionel Chun"}).exec();
-        res.send(data);
-    } catch (e) {
-        res.send(e.message);
-    }
+// app.get("/", async (req, res) => {
+//     try {
+//         let data = await Student.find().exec();
+//         // let data = await Student.find({name: "Lionel Chun"}).exec();
+//         res.send(data);
+//     } catch (e) {
+//         res.send(e.message);
+//     }
     
-});
+// });
 
 app.listen(3000, () => {
     console.log("伺服器正在耹聽port 3000...")
