@@ -229,7 +229,7 @@ app.get("/create3", async (req, res) => {
     });
 });
 
-// Define a schema using filters and create an object called studentSchema2.
+// Define a schema using filters and create an object called studentSchema3.
 const studentSchema3 = new Schema({
     name: {type: String, required: true},
     age: { type: Number, min: [0, "年齡不能小於0歲"]},
@@ -266,6 +266,7 @@ app.get("/create4", async (req, res) => {
     });
 });
 
+// Define a schema using filters and create an object called studentSchema4.
 const studentSchema4 = new Schema({
     name: {type: String, required: true},
     age: { type: Number, min: [0, "年齡不能小於0歲"]},
@@ -301,6 +302,67 @@ app.get("/create5", async (req, res) => {
         res.send(e.message);
     });
 });
+
+// Define a schema using filters and create an object called studentSchema4.
+const studentSchema5 = new Schema({
+    name: {type: String, required: true, maxlength: 25},
+    age: { type: Number, min: [0, "年齡不能小於0歲"]},
+    major: {type: String, required: [true, "每個學生都需要選至少一個主修"],
+        enum: ["Chemistry", "Computer Science", "Mathematiccs", "Civil Engineering"]
+    },
+        
+    scholarship: {
+        merit: {type: Number, default: 0},
+        other: {type: Number, default: 0}
+    }
+},
+// read5
+{
+    methods: {
+        printTotalScholarship() {
+            return this.scholarship.merit + this.scholarship.other;
+        }
+    }
+});
+
+// Automatically create a database named exampleDB if it does not exist.
+const Student5 = mongoose.model("Student5", studentSchema5);
+
+app.get("/create6", async (req, res) => {
+
+    const newObject5 = new Student5({
+        name: "WilsonWilsonWilsonWilsonWilson",
+        age: 27,
+        major: "English",
+        // scholarship: {
+        //     merit: 3000,
+        //     other: 2000
+        // }
+    });
+    newObject5.save().then(saveObject => {
+        if (saveObject === newObject5) {
+            console.log("資料已經儲存完畢，儲存的資料是：");
+            console.log(saveObject);
+            res.send(saveObject);
+        }
+    }).catch((e) => {
+        console.log(e.message);
+        res.send(e.message);
+    });
+});
+
+app.get("/read5", async (req, res) => {
+
+    Student5.find({}).exec()
+    .then((arr, str) => {
+        arr.forEach(student => {
+            str = student.name + "的總獎學金金額是" + student.printTotalScholarship();
+        });
+        res.send(str);
+    }).catch((e) => {
+        res.send(e.message);
+    });
+});
 //// Schema Validators End
 
 
@@ -324,6 +386,7 @@ app.get("/", async (req, res) => {
     res.write('<p><a href="/create3">create3</a></p>');
     res.write('<p><a href="/create4">create4</a></p>');
     res.write('<p><a href="/create5">create5</a></p>');
+    res.write('<p><a href="/read5">read5</a></p>');
     res.end('再見');
 });
 
